@@ -2,6 +2,9 @@
 #include "EventHandler.h"
 #include "Event.h"
 #include <exception>
+#include "Client.h"
+
+
 //
 // <Method>
 //    Constructor
@@ -9,10 +12,7 @@
 //    Constructs the Server Manager.
 // @param serPtr the Server Socket we want to listen on.
 //
-ServerManager::ServerManager(unique_ptr<ServerSocket>& serPtr) : pool(thread::hardware_concurrency() * 2) {
-  mServerSocket = move(serPtr);
-
-}
+ServerManager::ServerManager(unique_ptr<ServerSocket>& serPtr) : pool(thread::hardware_concurrency() * 2), mIsRunning(true), mServerSocket(move(serPtr)){}
 
 //Destructor.
 ServerManager::~ServerManager() {
@@ -49,7 +49,7 @@ void ServerManager::listen() {
 
 void ServerManager::sendTask() {
   while (mIsRunning) {
-    unique_lock<mutex> drainLock(mMutex);
+    unique_lock<mutex> drainLock(mSendMutex);
     auto item = mSendQueue->pop();
     //Send the response to the server.
     if ((item.type != Type::INVALID)) {
@@ -84,15 +84,35 @@ void ServerManager::sendTask() {
 //   Return a unique pointer to the Socket that is created.
 // @return Pointer to a Socket.
 //
-void ServerManager::acceptConnection(unique_ptr<Socket> socket) {
+void ServerManager::acceptConnection(SOCKET& socket) {
   //Associate the socket with IOCP
-  HANDLE hTemp = CreateIoCompletionPort((HANDLE)socket->getFileDescriptor(), mCompletionPort, (DWORD)socket.get(), 0);
+  //Create a new ClientContext for this newly accepted client
+  shared_ptr<Client> client = make_shared<Client>(socket);
+  HANDLE hTemp = CreateIoCompletionPort((HANDLE)socket, mCompletionPort, (ULONG_PTR) client.get(), 0);
 
   if (hTemp) {
-    socket->beginReceive();
-    mSockets.push_back(move(socket));
+    unique_lock<mutex> lk(mClientQueue);
+    mSockets.insert(std::pair<PULONG_PTR, shared_ptr<Client>>((PULONG_PTR)client.get(), client));
+    lk.unlock();
+    client->BeginRead();
   }
+}
 
+//
+// <Method>
+//    acceptConnection
+// <Summary>
+//   Accept a connection that is attempting to connection
+//   Return a unique pointer to the Socket that is created.
+// @return Pointer to a Socket.
+//
+void ServerManager::removeConnection(const shared_ptr<Client>& client) {
+
+  PULONG_PTR key = reinterpret_cast<PULONG_PTR>(client.get());
+
+  if (key && mSockets.find(key) != mSockets.end()) {
+    mSockets.erase(key);
+  }
 }
 
 //
@@ -106,15 +126,17 @@ void ServerManager::getConnections() {
   SOCKET serverSocketDesc = mServerSocket->getSocketFileDescriptor();
   WSANETWORKEVENTS events;
 
-  while (true) {
+  while (mIsRunning.load()) {
     if (WSA_WAIT_TIMEOUT != WSAWaitForMultipleEvents(1, &mAcceptEvent, FALSE, 100, FALSE))
     {
       WSAEnumNetworkEvents(serverSocketDesc, mAcceptEvent, &events);
-      if ((events.lNetworkEvents & FD_ACCEPT) && (0 == events.iErrorCode[FD_ACCEPT_BIT]))
-      {
-        unique_ptr<Socket> socket = mServerSocket->acceptSocket();
-        if (socket != nullptr) {
-          acceptConnection(move(socket));
+      if ((events.lNetworkEvents & FD_ACCEPT) && (0 == events.iErrorCode[FD_ACCEPT_BIT])) {
+        try {
+          SOCKET socket = mServerSocket->acceptSocket();
+          acceptConnection(socket);
+        }
+        catch (...) {
+          cout << "err" << endl;
         }
       }
     }
@@ -129,29 +151,26 @@ void ServerManager::getConnections() {
 // @return Pointer to a Socket.
 //
 void ServerManager::workerThread() {
-  void *lpContext = NULL;
-  OVERLAPPED       *pOverlapped = NULL;
-  DWORD            dwBytesTransfered = 0;
-  int nBytesRecv = 0;
-  int nBytesSent = 0;
-  DWORD             dwBytes = 0, dwFlags = 0;
+  PULONG_PTR ptrClient = NULL;
+  OVERLAPPED *ptrOverlapped = NULL;
+  DWORD bytesTransferred = 0;
+  BOOL Status = 0;
 
-  //Worker thread will be around to process requests,
-  //until a Shutdown event is not Signaled.
-  while (true)
-  {
-    BOOL bReturn = GetQueuedCompletionStatus(
-      mCompletionPort,
-      &dwBytesTransfered,
-      (PULONG_PTR)&lpContext,
-      &pOverlapped,
-      INFINITE);
+  while (mIsRunning.load()) {
+    Status = GetQueuedCompletionStatus(mCompletionPort, &bytesTransferred,
+      (PULONG_PTR)&ptrClient, &ptrOverlapped, INFINITE);
 
-    if (NULL == lpContext)
-    {
-      //We are shutting down
+    if (ptrClient) {
+      auto client = mSockets.at(ptrClient);
+      if ((!Status) || (Status && (bytesTransferred == 0))) {
+        removeConnection(client);
+        continue;
+      }
+    } else {
+      cout << "Error" << endl;
       break;
-    }
+    } 
+
   }
 
 }

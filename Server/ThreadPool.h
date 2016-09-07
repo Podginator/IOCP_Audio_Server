@@ -42,7 +42,7 @@ private:
 
   // Do the task, these are what the threads in the thread queue run.
   void DoTask() {
-    while (isFinished()) {
+    while (!isFinished()) {
       // Get the next task (This will block)
       Task task = nextTask();
       
@@ -51,8 +51,6 @@ private:
 
       // Decrement the remaining Task.
       mJobsRemaining -= 1; 
-      // Then Notify the ???
-      mWait.notify_one();
     }
   }
 
@@ -83,8 +81,6 @@ public:
   // NOTE:: WILL BLOCK UNTIL ALL QUEUES ARE COMPLETE. 
   void JoinAll() {
     if (!isFinished()) {
-      // Notify all the queues to drain the threads. 
-      mJobAvailable.notify_all();
 
       for (auto &x : mThreads) {
         if (x.joinable()) {

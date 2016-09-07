@@ -65,7 +65,7 @@ public:
   //   Return a unique pointer to the Socket that is created.
   // @return Pointer to a Socket.
   //
-  unique_ptr<Socket> acceptSocket();
+  SOCKET acceptSocket();
 
   //
   // <Method>

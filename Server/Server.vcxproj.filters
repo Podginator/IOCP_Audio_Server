@@ -90,6 +90,9 @@
     <ClInclude Include="Packet.h">
       <Filter>Header Files\Client</Filter>
     </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Header Files\Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

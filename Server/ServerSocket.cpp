@@ -32,7 +32,7 @@ ServerSocket::~ServerSocket() {
 //   Return a unique pointer to the Socket that is created.
 // @return Pointer to a Socket.
 //
-unique_ptr<Socket> ServerSocket::acceptSocket() {
+SOCKET ServerSocket::acceptSocket() {
   struct sockaddr_in cliAddr;
   socklen_t cliLen = sizeof(cliAddr);
   SOCKET s =
@@ -40,10 +40,10 @@ unique_ptr<Socket> ServerSocket::acceptSocket() {
 
   if (s != SOCKET_ERROR) {
     cout << "Client connected to the Server. " << endl;
-    return make_unique<Socket>(s, cliAddr);
+    return s;
+  } else {
+    throw "Socket Error when accepting socket!";
   }
-
-  return nullptr;
 }
 
 // Returns the Socket File Descriptor. 

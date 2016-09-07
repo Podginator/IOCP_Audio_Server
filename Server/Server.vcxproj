@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClInclude Include="AudioServerHandler.h" />
     <ClInclude Include="AudioClientManagerFactory.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="FileList.h" />
     <ClInclude Include="FilePackager.h" />
     <ClInclude Include="FileConverter.h" />
