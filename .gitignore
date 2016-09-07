@@ -45,3 +45,17 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+*.suo
+Debug/Server.exe
+*.pdb
+Server.sdf
+*.db
+Debug/Server.ilk
+*.obj
+*.log
+Server/Debug/Server.tlog/CL.command.1.tlog
+*.tlog
+Server/Debug/servermanager.obj.enc
+*.idb
+*.exe
+x64/Debug/Server.exe
