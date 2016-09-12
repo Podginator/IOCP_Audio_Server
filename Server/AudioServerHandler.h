@@ -6,7 +6,6 @@
 #include "InputHandler.h"
 #include "FileList.h"
 #include "Song.h"
-#include "Socket.h"
 #include "SongFileConverter.h"
 #include <atomic>
 
@@ -20,33 +19,25 @@ public:
 
   //Constructor
   // conQue: Weak_Ptr to a ConcurrentQueue of Packets. This is where we'll send to.
-  explicit AudioServerHandler();
+  AudioServerHandler(weak_ptr<Client> client, weak_ptr<ConcurrentQueue<ClientPacket>> packetQueue);
  
   //Handle the Packet we have sent 
   //  sentMessage: The Packet we wish to process.  
-  void handlePacket(const Socket&& socket, weak_ptr<ConcurrentQueue<Packet>> queue, const Packet& packet);
+  void handlePacket(const Packet& packet);
 private: 
   
-  // Is the current thread running
-  atomic_bool isRunning = false;
-
-  // Is the read thread running
-  atomic_bool readThreadActive = false;
-  
-  // The Mutex.
-  mutex mMutex;
-
-  // Is this the only thread running.
-  condition_variable_any mIsOnly;
-
   // The File List of songs.
   unique_ptr<FileList<Song>> fileList;
 
+  // The Packet Queue 
+  weak_ptr<ConcurrentQueue<ClientPacket>> mConQueue;
 
+  // The Client we wish to send to.
+  weak_ptr<Client> mClient;
+  
   // Requst a song, chop it up and send it to te mConQueue
   //   fileName : The Song File we want to dissect.
-  void requestFile(Song songFile);
-
+  void requestFile(Song song);
 
   void requestFileList(const FileList<Song>& files);
 };

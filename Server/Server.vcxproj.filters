@@ -37,11 +37,14 @@
     <Filter Include="Source Files\Client\Handler">
       <UniqueIdentifier>{5f5897c3-2846-43d1-95ea-042966617689}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\EventHandler">
-      <UniqueIdentifier>{938823ea-0123-4dd6-a6f1-0f87ff0dacb1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\File">
       <UniqueIdentifier>{16402088-bb76-48d1-a509-e8346f569167}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{32ca8cf8-d12c-4c22-bf0c-533e4bad97eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server">
+      <UniqueIdentifier>{4868933a-d1c4-46f3-ac7b-fd4f6a41a8c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,40 +84,40 @@
     <ClInclude Include="WavFilePackager.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
-    <ClInclude Include="AudioClientManagerFactory.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Socket.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
     <ClInclude Include="Packet.h">
       <Filter>Header Files\Client</Filter>
     </ClInclude>
     <ClInclude Include="Client.h">
       <Filter>Header Files\Client</Filter>
     </ClInclude>
+    <ClInclude Include="IClientHandlerFactory.h">
+      <Filter>Header Files\Client\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioClientHandlerFactory.h">
+      <Filter>Header Files\Client\Handlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerSocket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WavFilePackager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioClientManagerFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AudioServerHandler.cpp">
       <Filter>Source Files\Client\Handler</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPool.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="WavFilePackager.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerManager.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSocket.cpp">
+      <Filter>Source Files\Server</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

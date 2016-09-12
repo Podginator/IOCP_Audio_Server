@@ -92,6 +92,14 @@ void AudioServerHandler::requestFile(Song song){
       }
     }
 
+    ofstream fout;
+    fout.open("C:\\Users\\Podginator\\Documents\\GitHub\\FileC.wav", ios::binary | ios::out);
+
+    for (auto by : vectorBytes) {
+      fout.write((char*)&by, sizeof(char));
+    }
+    fout.close();
+
     packager.closeFile();
   }
 }

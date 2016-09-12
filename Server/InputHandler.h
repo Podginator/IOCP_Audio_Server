@@ -2,12 +2,10 @@
 
 #include "stdadfx.h"
 #include "Packet.h"
+#include "Client.h"
 #include "ConcurrentQueue.h"
-#include "Socket.h"
 
-/**
-* The Server Handler Interface.
-*/
+// The Response Handler. 
 class InputHandler
 {
 public:
@@ -28,7 +26,7 @@ public:
   // <Summary> 
   //  return a Response Struct to send back.
   // @param sentMessage the Message we have been set.
-  virtual void handlePacket(const Socket&& socket, weak_ptr<ConcurrentQueue<Packet>> queue, const Packet& packet) = 0;
+  virtual void handlePacket(const Packet& packet) = 0;
 private:
   // What type this is listening for.
   Type mListenFor;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "stdadfx.h"
-#include "Socket.h"
 #include <atomic>
 
 /**

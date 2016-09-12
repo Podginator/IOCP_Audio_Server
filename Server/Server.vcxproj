@@ -113,26 +113,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AudioClientHandlerFactory.h" />
     <ClInclude Include="AudioServerHandler.h" />
-    <ClInclude Include="AudioClientManagerFactory.h" />
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="FileList.h" />
     <ClInclude Include="FilePackager.h" />
     <ClInclude Include="FileConverter.h" />
+    <ClInclude Include="IClientHandlerFactory.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="Song.h" />
     <ClInclude Include="ConcurrentQueue.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="ServerManager.h" />
     <ClInclude Include="ServerSocket.h" />
-    <ClInclude Include="Socket.h" />
     <ClInclude Include="SongFileConverter.h" />
     <ClInclude Include="stdadfx.h" />
     <ClInclude Include="WavFilePackager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioServerHandler.cpp" />
-    <ClCompile Include="AudioClientManagerFactory.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
