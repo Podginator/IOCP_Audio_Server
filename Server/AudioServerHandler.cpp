@@ -8,8 +8,8 @@
 // conQue: Weak_Ptr to a ConcurrentQueue of Packets. This is where we'll send to.
 // Tell the InputHandler that we deal with Track, Exit and File List.
 AudioServerHandler::AudioServerHandler(weak_ptr<Client> client, weak_ptr<ConcurrentQueue<ClientPacket>> packetQueue)
-  : InputHandler(Type::TRACK | Type::EXIT | Type::FILELIST), mConQueue(packetQueue), mClient(client) {
-    fileList = make_unique<FileList<Song>>("C:\\", "wav", make_unique<SongFileConverter>());
+  : InputHandler(Type::TRACK | Type::FILELIST), mConQueue(packetQueue), mClient(client) {
+    fileList = make_unique<FileList<Song>>("C:\\Temp", "wav", make_unique<SongFileConverter>());
 }
 
 //Handle the Packet we have sent 
@@ -26,12 +26,12 @@ void AudioServerHandler::handlePacket(const Packet& sentMessage) {
     if (sentMessage.size == sizeof(Song)) {
       //Copy the memory of the song to a song object. 
       memcpy(&packetSong, sentMessage.packetData, sentMessage.size);
-      requestFile(packetSong);
+      requestFile(sentMessage.id, packetSong);
     }
     break;
   }
   case Type::FILELIST:
-    requestFileList(*fileList);
+    requestFileList(sentMessage.id, *fileList);
     break;
   }
  
@@ -41,7 +41,7 @@ void AudioServerHandler::handlePacket(const Packet& sentMessage) {
 //   fileName : The Song File we want to dissect. 
 //   Note: We perform a copy here to avoid any issues with synchronization.
 //   Song is trivially copyable and the performance overhead is minimal.
-void AudioServerHandler::requestFile(Song song){
+void AudioServerHandler::requestFile(int id, Song song){
   std::vector<byte> vectorBytes;
   //Get the index of the thread.
   int index = fileList->indexOf(song);
@@ -65,7 +65,7 @@ void AudioServerHandler::requestFile(Song song){
       for (int i = 0; i < headerSize; i++) {
         vectorBytes.push_back(headerBuffer[i]);
       }
-      Packet packet(Type::AUDIO, (int) headerSize, headerBuffer);
+      Packet packet(Type::AUDIO, (int) headerSize, id, headerBuffer);
       delete[] headerBuffer;
 
       if (auto queue = mConQueue.lock()) {
@@ -82,7 +82,7 @@ void AudioServerHandler::requestFile(Song song){
           vectorBytes.push_back(dataBuffer[i]);
         }
         
-        Packet dataPacket(Type::AUDIO, (int) actualSize, dataBuffer);
+        Packet dataPacket(Type::AUDIO, (int) actualSize, id, dataBuffer);
 
         if (auto queue = mConQueue.lock()) {
           queue->push(ClientPacket(mClient, dataPacket));
@@ -97,7 +97,7 @@ void AudioServerHandler::requestFile(Song song){
 }
 
 
-void AudioServerHandler::requestFileList(const FileList<Song>& files) {
+void AudioServerHandler::requestFileList(int id, const FileList<Song>& files) {
   size_t songSize = sizeof(Song);
 
   byte* byteArray = new byte[Packet::maxPacketSize];
@@ -111,7 +111,7 @@ void AudioServerHandler::requestFileList(const FileList<Song>& files) {
 
       if (auto queue = mConQueue.lock()) {
         //Make the packet. 
-        Packet intermediatePacket(Type::FILELIST, used, byteArray);
+        Packet intermediatePacket(Type::FILELIST, used, id, byteArray);
         //Delete the existing one.
         delete[] byteArray;
         queue->push(ClientPacket(mClient, intermediatePacket));
@@ -131,7 +131,7 @@ void AudioServerHandler::requestFileList(const FileList<Song>& files) {
   }
 
   if (auto queue = mConQueue.lock()) {
-    Packet finalPacket(Type::FILELIST, used, byteArray);
+    Packet finalPacket(Type::FILELIST, used, id, byteArray);
     queue->push(ClientPacket(mClient, finalPacket));
   }
 

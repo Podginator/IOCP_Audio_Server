@@ -57,8 +57,8 @@ void ServerManager::sendTask() {
     if ((item.type != Type::INVALID)) {
 
       //Convert Packet down to byte array. 
-      // There's no need to send the entire
-      size_t packetSize = item.size + sizeof(Type) + sizeof(item.size);
+      // There's no need to send the entire packet. 
+      size_t packetSize = item.size + sizeof(Type) + sizeof(item.id) + sizeof(item.size);
       byte* data = new byte[packetSize];
 
       // Convert a Packet down to a char* buffer and 

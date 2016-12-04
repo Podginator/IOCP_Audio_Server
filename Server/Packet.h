@@ -10,11 +10,11 @@ enum Type {
   TRACK = 1 << 1,
   AUDIO = 1 << 2,
   FILELIST = 1 << 3,
-  FRIEND_REQ = 1 << 4,
-  USER_UPDATE = 1 << 5,
-  EXIT = 1 << 6,
+  IMAGE = 1 << 4,
+  SETTINGS = 1 << 5,
+  END = 1 << 6,
   First = INVALID,
-  Last = EXIT
+  Last = END
 };
 
 //Expose bitwise operators.
@@ -43,16 +43,21 @@ public:
   //Type of the Packet. 
   Type type;
 
+  // The Id of the packet.
+  int id;
+
   //Byte Array, max length set to 1024.
   byte packetData[maxPacketSize];
 
-  Packet() : type(Type::INVALID), size(0), packetData() {};
+  Packet() : type(Type::INVALID), size(0), packetData(), id(0) {};
 
-  Packet(Type type, int size, byte* data) : type(type), size(size) {
+  Packet(Type type, int size, int id, byte* data) : type(type), size(size), id(id) {
     if (data != nullptr) {
       std::copy(data, data + size, packetData);
     }
   }
+
+  Packet(Type type, int size, byte* data) : Packet(type, size, 0, data) {};
 
   void Deserialize(char* msg, const size_t& packetSize) throw (runtime_error) {
     char* currPos = msg;
@@ -64,8 +69,13 @@ public:
       memcpy(&datasize, currPos, sizeof(int));
       currPos += sizeof(int);
 
+
       // As long as the packet isn't greater than the max size we can continue.
       if (datasize <= Packet::maxPacketSize && datasize >= 0) {
+        int packetId;
+        memcpy(&packetId, currPos, sizeof(int));
+        currPos += sizeof(int);
+
         //Then convert type
         Type datatype = Type::INVALID;
         memcpy(&datatype, currPos, sizeof(Type));
@@ -76,6 +86,7 @@ public:
         if (datatype > Type::INVALID && type <= Type::Last && !(type & (type - 1))) {
           isValid = true;
           // we can continue. 
+          id = packetId;
           type = datatype;
           size = datasize;
           if (size > 0) {

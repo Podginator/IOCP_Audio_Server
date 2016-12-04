@@ -99,6 +99,12 @@
     <ClInclude Include="AudioClientHandlerFactory.h">
       <Filter>Header Files\Client\Handlers</Filter>
     </ClInclude>
+    <ClInclude Include="SettingsHandler.h">
+      <Filter>Header Files\Client\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -118,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="ServerSocket.cpp">
       <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsHandler.cpp">
+      <Filter>Source Files\Client\Handler</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
