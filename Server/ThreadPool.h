@@ -30,69 +30,25 @@ private:
   ConcurrentQueue<Task> mTasks;
 
   // Get the Next Task in the queue.
-  Task nextTask() {
-    Task res;
-
-    if (!isFinished()) {
-      res = mTasks.pop();
-    }
-
-    return res; 
-  }
+  Task nextTask();
 
   // Do the task, these are what the threads in the thread queue run.
-  void DoTask() {
-    while (!isFinished()) {
-      // Get the next task (This will block)
-      Task task = nextTask();
-      
-      // Run the task.
-      task();
-
-      // Decrement the remaining Task.
-      mJobsRemaining -= 1; 
-    }
-  }
+  void DoTask();
 
 
 protected:
 public:
   //Constructor, if no thread number is assigned 
   //Then assign the maximum amount
-  ThreadPool(int numThreads = -1) {
-    if (numThreads < 0) {
-      numThreads = std::thread::hardware_concurrency();
-    }
-
-    mThreads.reserve(numThreads);
-
-    for (int i = 0; i < numThreads; i++) {
-      mThreads.push_back(thread([this, i] {this->DoTask(); }));
-    }
-  }
+	ThreadPool(int numThreads = -1);
 
 
   // Enqueue the Task we want to complete. 
-  void EnqueueTask(const Task& task) {
-    mTasks.push(task);
-  }
+  void EnqueueTask(const Task& task);
 
   // Join all the threads
   // NOTE:: WILL BLOCK UNTIL ALL QUEUES ARE COMPLETE. 
-  void JoinAll() {
-    if (!isFinished()) {
+  void JoinAll();
 
-      for (auto &x : mThreads) {
-        if (x.joinable()) {
-          x.join();
-        }
-      }
-
-      mFinished.store(true);
-    }
-  }
-
-  bool isFinished() {
-    return mFinished.load();
-  }  
+  bool isFinished();
 };

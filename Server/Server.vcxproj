@@ -134,11 +134,15 @@
     <ClInclude Include="WavFilePackager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioClientHandlerFactory.cpp" />
     <ClCompile Include="AudioServerHandler.cpp" />
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
     <ClCompile Include="SettingsHandler.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="ThreadPool.h" />
     <ClCompile Include="WavFilePackager.cpp" />
   </ItemGroup>

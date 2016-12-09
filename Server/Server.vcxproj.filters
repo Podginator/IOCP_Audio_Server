@@ -40,11 +40,14 @@
     <Filter Include="Source Files\File">
       <UniqueIdentifier>{16402088-bb76-48d1-a509-e8346f569167}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Utilities">
-      <UniqueIdentifier>{32ca8cf8-d12c-4c22-bf0c-533e4bad97eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Server">
       <UniqueIdentifier>{4868933a-d1c4-46f3-ac7b-fd4f6a41a8c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{63daf49a-c76f-4d4b-aa02-666a4932d63b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{32ca8cf8-d12c-4c22-bf0c-533e4bad97eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +130,18 @@
     </ClCompile>
     <ClCompile Include="SettingsHandler.cpp">
       <Filter>Source Files\Client\Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Source Files\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioClientHandlerFactory.cpp">
+      <Filter>Source Files\Client\Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

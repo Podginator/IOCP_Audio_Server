@@ -1,7 +1,5 @@
 #pragma once
 #include "stdadfx.h"
-#include "Client.h"
-
 
 // Type Enum, Bit Flags as we want the handlers
 // To be able to handle a lot of them.
@@ -103,4 +101,3 @@ public:
   }
 };
 
-typedef std::pair<weak_ptr<Client>, Packet> ClientPacket;

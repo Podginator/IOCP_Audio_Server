@@ -9,7 +9,7 @@
 // Tell the InputHandler that we deal with Track, Exit and File List.
 AudioServerHandler::AudioServerHandler(weak_ptr<Client> client, weak_ptr<ConcurrentQueue<ClientPacket>> packetQueue)
   : InputHandler(Type::TRACK | Type::FILELIST), mConQueue(packetQueue), mClient(client) {
-    fileList = make_unique<FileList<Song>>("C:\\Temp", "wav", make_unique<SongFileConverter>());
+    fileList = make_unique<FileList<Song>>("C:\\Users\\Podginator\\Music", "wav", make_unique<SongFileConverter>());
 }
 
 //Handle the Packet we have sent 
@@ -37,7 +37,7 @@ void AudioServerHandler::handlePacket(const Packet& sentMessage) {
  
 }
 
-// Requst a song, chop it up and send it to te mConQueue
+// Requst a song, chop it up and send it to the mConQueue
 //   fileName : The Song File we want to dissect. 
 //   Note: We perform a copy here to avoid any issues with synchronization.
 //   Song is trivially copyable and the performance overhead is minimal.

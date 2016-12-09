@@ -2,7 +2,6 @@
 #include "Settings.h"
 #include "InputHandler.h"
 
-
 using namespace std;
 
 /**
