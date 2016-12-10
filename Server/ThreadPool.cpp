@@ -1,15 +1,6 @@
 #include "ThreadPool.h"
 
-// Get the Next Task in the queue.
-Task ThreadPool::nextTask() {
-	Task res;
-
-	if (!isFinished()) {
-		res = mTasks.pop();
-	}
-
-	return res;
-}
+typedef function<void(void)> Task;
 
 // Do the task, these are what the threads in the thread queue run.
 void ThreadPool::DoTask() {
@@ -25,9 +16,19 @@ void ThreadPool::DoTask() {
 	}
 }
 
+Task ThreadPool::nextTask() {
+	Task res;
+
+	if (!isFinished()) {
+		res = mTasks.pop();
+	}
+
+	return res;
+}
+
 //Constructor, if no thread number is assigned 
 //Then assign the maximum amount
-ThreadPool::ThreadPool(int numThreads = -1) {
+ThreadPool::ThreadPool(int numThreads) {
 	if (numThreads < 0) {
 		numThreads = std::thread::hardware_concurrency();
 	}

@@ -8,6 +8,9 @@
 #include "ThreadPool.h"
 #include "Client.h"
 #include "IClientHandlerFactory.h"
+#include <exception>
+#include <fstream>
+#include "Client.h"
 #include <map>
 
 // The Manager class to manage the Listening Server and Connection

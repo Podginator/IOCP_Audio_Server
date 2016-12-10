@@ -127,7 +127,7 @@ void AudioServerHandler::requestFileList(int id, const FileList<Song>& files) {
 
     memcpy(pointer, &type, songSize);
     pointer += songSize;
-    used += songSize;
+    used += (int) songSize;
   }
 
   if (auto queue = mConQueue.lock()) {

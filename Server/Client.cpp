@@ -64,7 +64,7 @@ void Client::CompleteRead(size_t size) {
 // Begin The Send Operation
 void Client::BeginSend(byte* data, size_t dataSize) {
 	//Get data.
-	mWSASendBuffer->len = dataSize;
+	mWSASendBuffer->len = (ULONG) dataSize;
 	mWSASendBuffer->buf = reinterpret_cast<char*>(data);
 	DWORD dwFlags = 0;
 	DWORD dwBytes = 0;
